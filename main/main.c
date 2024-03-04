@@ -16,33 +16,37 @@ const int MOTOR_PIN_O = 10;
 const int MOTOR_PIN_Y = 11;
 const int MOTOR_PIN_P = 12;
 const int MOTOR_PIN_B = 13;
+
 const int LED_PIN_R = 18;
 const int LED_PIN_B = 19;
 const int LED_PIN_Y = 20;
 const int LED_PIN_G = 21;
+
 const int BTN_PIN_Y = 2;
 const int BTN_PIN_R = 3;
 const int BTN_PIN_B = 4;
 const int BTN_PIN_G = 5;
-const int BUZZER_PIN = 6;
-volatile int btn_y_state = 0;
-volatile int btn_r_state = 0;
-volatile int btn_b_state = 0;
-volatile int btn_g_state = 0;
 
-void btn_callback(uint gpio, uint32_t events){
+const int BUZZER_PIN = 6;
+
+volatile bool btn_y_state = false;
+volatile bool btn_r_state = false;
+volatile bool btn_b_state = false;
+volatile bool btn_g_state = false;
+
+void btn_callback(uint gpio, uint32_t events) {
     if(gpio == BTN_PIN_R && events == GPIO_IRQ_EDGE_FALL){
-        btn_r_state = 1;
+        btn_r_state = true;
     } else if (gpio == BTN_PIN_B && events == GPIO_IRQ_EDGE_FALL){
-        btn_b_state = 1;
+        btn_b_state = true;
     } else if(gpio == BTN_PIN_Y && events == GPIO_IRQ_EDGE_FALL){
-        btn_y_state = 1;
+        btn_y_state = true;
     } else if (gpio == BTN_PIN_G && events == GPIO_IRQ_EDGE_FALL){
-        btn_g_state = 1;
+        btn_g_state = true;
     }
 }
 
-void play_sound(int btn, int indice){
+void play_sound(int btn, int indice) {
     int freqs[4] = {440, 660, 880, 1100};
     int duration_ms = 1000;
     int t = 1000000/(freqs[indice]*2); // o 10^6 eh pq estamos convertendo para microsegundos e t = 1/f, e dividimos por 2 por ser metade da onda ligada e metade desligada
@@ -55,7 +59,7 @@ void play_sound(int btn, int indice){
     }
 }
 
-void um_quarto_de_volta(){
+void um_quarto_de_volta() {
     for (int i = 0; i <= 512/4; i++){
         gpio_put(MOTOR_PIN_P, 1);
         sleep_ms(10);
@@ -72,7 +76,7 @@ void um_quarto_de_volta(){
     }
 }
 
-void play_acertou(){
+void play_acertou() {
     for(int i = 0; i < 50; i++){
         gpio_put(BUZZER_PIN, 1);
         sleep_us(500000/880);
@@ -93,7 +97,7 @@ void play_acertou(){
     }
 }
 
-void play_errou(){
+void play_errou() {
     for(int i = 0; i < 50; i++){
         gpio_put(BUZZER_PIN, 1);
         sleep_us(500000/220);
@@ -114,18 +118,18 @@ void play_errou(){
     }
 }
 
-void tocando_sequencia_nova(int sequencia[], int leds[], int btns[]){
+void tocando_sequencia_nova(int sequencia[], int leds[], int btns[]) {
     int indice = rand() % 4;
     sequencia[0] += 1;
     sequencia[sequencia[0]] = btns[indice];
-    for(int i = 1; i < sequencia[0]; i++){
+    for(int i = 1; i <= sequencia[0]; i++){
         gpio_put(leds[indice], 1);
         play_sound(sequencia[i], indice);
         gpio_put(leds[indice], 0);
     }
 }
 
-int checa_sequencia(int botao_certo, int botao_apertado){
+int checa_sequencia(int botao_certo, int botao_apertado) {
     if(botao_apertado == botao_certo){
         play_acertou();
         return 1;
@@ -182,33 +186,28 @@ int main() {
 
     int leds[4] = {LED_PIN_B, LED_PIN_G, LED_PIN_R, LED_PIN_Y};
     int btns[4] = {BTN_PIN_B, BTN_PIN_G, BTN_PIN_R, BTN_PIN_Y};
-    int sequencia[100000] = {1}; // obs: primeiro termo de sequencia eh o tamanho do proprio array
+    int sequencia[100000] = {0}; // obs: primeiro termo de sequencia eh o tamanho do proprio array
     int botao_apertado;
-    int acertou = 1;
 
-    while (true) {
+    bool acertou = true;
+
+    while(true) {
         if(acertou){
-            acertou = 0;
             tocando_sequencia_nova(sequencia, leds, btns);
             for(int i = 1; i < sequencia[0]; i++){
-                if(btn_b_state){
-                    botao_apertado = BTN_PIN_B;
-                    btn_b_state = 0;
-                } else if(btn_g_state){
-                    botao_apertado = BTN_PIN_G;
-                    btn_g_state = 0;
-                } else if(btn_r_state){
-                    botao_apertado = BTN_PIN_R;
-                    btn_r_state = 0;
-                } else if(btn_y_state){
-                    botao_apertado = BTN_PIN_Y;
-                    btn_y_state = 0;
+                if(btn_b_state && sequencia[i] == BTN_PIN_B){
+                    btn_b_state = false;
+                } else if(btn_g_state && sequencia[i] == BTN_PIN_G){
+                    btn_g_state = false;
+                } else if(btn_r_state && sequencia[i] == BTN_PIN_R){
+                    btn_r_state = false;
+                } else if(btn_y_state && sequencia[i] == BTN_PIN_Y){
+                    btn_y_state = false;
                 } else {
-                    botao_apertado = 10;
+                    play_errou();
+                    acertou = false;
                 }
-                if(botao_apertado != 10){
-                    acertou = checa_sequencia(sequencia[i], botao_apertado);
-                }
+                play_acertou();
             }
         } else {
             main();
