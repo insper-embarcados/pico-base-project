@@ -143,6 +143,37 @@ void play_sound(int indice) {
     }
 }
 
+void play_wrong() {
+    int freqs[4] = {440, 304, 261, 220}; // Frequencies for the "wrong" tantaaan sound
+    int duration_ms = 200; // Each tone will last for 500 milliseconds
+    for (int i = 0; i < 4; i++) {
+        int t = 1000000 / (freqs[i] * 2); // Calculate the time period for the tone
+        int n = duration_ms * 1000 / (t * 2); // Calculate the number of cycles based on the duration and time period
+        for (int j = 0; j < n; j++) {
+            gpio_put(BUZZER_PIN, 1); // Turn on the buzzer
+            sleep_us(t); // Wait for the specified time period
+            gpio_put(BUZZER_PIN, 0); // Turn off the buzzer
+            sleep_us(t); // Wait for the same time period (creating the full cycle)
+        }
+    }
+}
+
+void play_right() {
+    int freqs[2] = {120, 550}; // Frequencies for the "wrong" tantaaan sound
+    int duration_ms = 80; // Each tone will last for 500 milliseconds
+    for (int i = 0; i < 2; i++) {
+        int t = 1000000 / (freqs[i] * 2); // Calculate the time period for the tone
+        int n = duration_ms * 1000 / (t * 2); // Calculate the number of cycles based on the duration and time period
+        for (int j = 0; j < n; j++) {
+            gpio_put(BUZZER_PIN, 1); // Turn on the buzzer
+            sleep_us(t); // Wait for the specified time period
+            gpio_put(BUZZER_PIN, 0); // Turn off the buzzer
+            sleep_us(t); // Wait for the same time period (creating the full cycle)
+        }
+    }
+}
+
+
 int muda_sequencia(int sequencia[], int tamanho_sequencia){
     sequencia[tamanho_sequencia] = rand() % 4;
     tamanho_sequencia += 1;
@@ -151,9 +182,9 @@ int muda_sequencia(int sequencia[], int tamanho_sequencia){
 
 void toca_sequencia(int sequencia[], int leds[], int tamanho_sequencia){
     for(int i = 0; i < tamanho_sequencia; i++) {
-        gpio_put(leds[i], 1);
-        play_sound(i);
-        gpio_put(leds[i], 0);
+        gpio_put(leds[sequencia[i]], 1);
+        play_sound(sequencia[i]);
+        gpio_put(leds[sequencia[i]], 0);
         sleep_ms(100);
     }
 }
@@ -161,43 +192,99 @@ void toca_sequencia(int sequencia[], int leds[], int tamanho_sequencia){
 int main(){
     stdio_init_all();
     inicializa_dispositivos();
-    printf("main");
+    printf("main\n");
 
     int tamanho_sequencia = 0;
     int sequencia[100] = {};
 
+    int win_streak = 0;
+
     int leds[4] = {LED_PIN_B, LED_PIN_G, LED_PIN_R, LED_PIN_Y};
 
-    bool acertou = true;
+    // bool acertou = true;
+    bool perdeu = false;
 
     while(true){
-        if(start){
+        if ((win_streak == tamanho_sequencia && !perdeu) || (perdeu && start)) {
+            perdeu = false;
+
+            sleep_ms(1000);
             tamanho_sequencia = muda_sequencia(sequencia, tamanho_sequencia);
             toca_sequencia(sequencia, leds, tamanho_sequencia);
 
+            win_streak = 0;
+
             for(int i = 0; i < tamanho_sequencia; i++){
-                if(acertou) {
-                    printf("comecou");
-                    while (!btn_b_state && !btn_g_state && !btn_r_state && !btn_y_state);
-                    if(btn_b_state && sequencia[i] == BTN_PIN_B){
-                        btn_b_state = false;
-                    } else if(btn_g_state && sequencia[i] == BTN_PIN_G){
-                        btn_g_state = false;
-                    } else if(btn_r_state && sequencia[i] == BTN_PIN_R){
-                        btn_r_state = false;
-                    } else if(btn_y_state && sequencia[i] == BTN_PIN_Y){
-                        btn_y_state = false;
-                    } else {
-                        acertou = false;
-                    }
+                printf("começou\n");
+                
+                while (!btn_b_state && !btn_g_state && !btn_r_state && !btn_y_state);
+                printf("passou do while\n");
+
+                sleep_ms(100);
+
+                if(btn_b_state && sequencia[i] == 0){
+                    gpio_put(LED_PIN_B, 1);
+                    sleep_ms(300);
+                    gpio_put(LED_PIN_B, 0);
+                    btn_b_state = false;
+                } else if(btn_g_state && sequencia[i] == 1){
+                    gpio_put(LED_PIN_G, 1);
+                    sleep_ms(300);
+                    gpio_put(LED_PIN_G, 0);
+                    btn_g_state = false;
+                } else if(btn_r_state && sequencia[i] == 2){
+                    gpio_put(LED_PIN_R, 1);
+                    sleep_ms(300);
+                    gpio_put(LED_PIN_R, 0);
+                    btn_r_state = false;
+                } else if(btn_y_state && sequencia[i] == 3){
+                    gpio_put(LED_PIN_Y, 1);
+                    sleep_ms(300);
+                    gpio_put(LED_PIN_Y, 0);
+                    btn_y_state = false;
                 } else {
-                    play_sound(4);
-                    start = false;
-                    acertou = true;
-                    memset(sequencia, 0, tamanho_sequencia);
                     break;
                 }
+                win_streak += 1;
+            }
+            if (win_streak == tamanho_sequencia) {
+                play_right();
+            } else {
+                start = false;
+
+                gpio_put(LED_PIN_B, 1);
+                gpio_put(LED_PIN_G, 1);
+                gpio_put(LED_PIN_R, 1);
+                gpio_put(LED_PIN_Y, 1);
+
+                play_wrong();
+                win_streak = 0;
+                
+                gpio_put(LED_PIN_B, 0);
+                gpio_put(LED_PIN_G, 0);
+                gpio_put(LED_PIN_R, 0);
+                gpio_put(LED_PIN_Y, 0);
+    
+                memset(sequencia, 0, sizeof(sequencia));
+                tamanho_sequencia = 0;
+
+                perdeu = true;
+
+                btn_b_state = false;
+                btn_g_state = false;
+                btn_r_state = false;
+                btn_y_state = false;
+
+                sleep_ms(100);
             }
         }
     }
 }
+
+            // } else {
+            //     play_sound(4);
+            //     start = false;
+            //     acertou = true;
+            //     memset(sequencia, 0, tamanho_sequencia);
+            //     break;
+            // }
