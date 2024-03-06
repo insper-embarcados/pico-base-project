@@ -1,20 +1,4 @@
 
-// void um_quarto_de_volta() {
-//     for (int i = 0; i <= 512/4; i++){
-//         gpio_put(MOTOR_PIN_P, 1);
-//         sleep_ms(10);
-//         gpio_put(MOTOR_PIN_P, 0);
-//         gpio_put(MOTOR_PIN_B, 1);
-//         sleep_ms(10);
-//         gpio_put(MOTOR_PIN_B, 0);
-//         gpio_put(MOTOR_PIN_O, 1);
-//         sleep_ms(10);
-//         gpio_put(MOTOR_PIN_O, 0);
-//         gpio_put(MOTOR_PIN_Y, 1);
-//         sleep_ms(10);
-//         gpio_put(MOTOR_PIN_Y, 0);
-//     }
-// }
 
 #include <stdio.h>
 #include <string.h>
@@ -58,6 +42,23 @@ void btn_callback(uint gpio, uint32_t events) {
         btn_g_state = true;
     } else if (gpio == BTN_PIN_START && events == GPIO_IRQ_EDGE_FALL){
         start = true;
+    }
+}
+
+void um_quarto_de_volta() {
+    for (int i = 0; i <= 512/4; i++){
+        gpio_put(MOTOR_PIN_P, 1);
+        sleep_ms(10);
+        gpio_put(MOTOR_PIN_P, 0);
+        gpio_put(MOTOR_PIN_B, 1);
+        sleep_ms(10);
+        gpio_put(MOTOR_PIN_B, 0);
+        gpio_put(MOTOR_PIN_O, 1);
+        sleep_ms(10);
+        gpio_put(MOTOR_PIN_O, 0);
+        gpio_put(MOTOR_PIN_Y, 1);
+        sleep_ms(10);
+        gpio_put(MOTOR_PIN_Y, 0);
     }
 }
 
@@ -236,6 +237,7 @@ int main(){
                 win_streak += 1;
             }
             if (win_streak == tamanho_sequencia) {
+                um_quarto_de_volta();
                 play_right();
             } else {
                 start = false;
