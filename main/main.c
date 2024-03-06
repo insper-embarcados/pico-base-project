@@ -16,30 +16,10 @@
 //     }
 // }
 
-// void play_acertou() {
-//     for(int i = 0; i < 50; i++){
-//         gpio_put(BUZZER_PIN, 1);
-//         sleep_us(500000/1880);
-//         gpio_put(BUZZER_PIN, 0);
-//         sleep_us(500000/1880);
-//     }
-//     for(int i = 0; i < 50; i++){
-//         gpio_put(BUZZER_PIN, 1);
-//         sleep_us(500000/1440);
-//         gpio_put(BUZZER_PIN, 0);
-//         sleep_us(500000/1440);
-//     }    
-//     for(int i = 0; i < 50; i++){
-//         gpio_put(BUZZER_PIN, 1);
-//         sleep_us(500000/1220);
-//         gpio_put(BUZZER_PIN, 0);
-//         sleep_us(500000/1220);
-//     }
-// }
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
@@ -144,37 +124,37 @@ void play_sound(int indice) {
 }
 
 void play_wrong() {
-    int freqs[4] = {440, 304, 261, 220}; // Frequencies for the "wrong" tantaaan sound
-    int duration_ms = 200; // Each tone will last for 500 milliseconds
+    int freqs[4] = {440, 304, 261, 220};
+    int duration_ms = 200;
     for (int i = 0; i < 4; i++) {
-        int t = 1000000 / (freqs[i] * 2); // Calculate the time period for the tone
-        int n = duration_ms * 1000 / (t * 2); // Calculate the number of cycles based on the duration and time period
+        int t = 1000000 / (freqs[i] * 2);
+        int n = duration_ms * 1000 / (t * 2);
         for (int j = 0; j < n; j++) {
-            gpio_put(BUZZER_PIN, 1); // Turn on the buzzer
-            sleep_us(t); // Wait for the specified time period
-            gpio_put(BUZZER_PIN, 0); // Turn off the buzzer
-            sleep_us(t); // Wait for the same time period (creating the full cycle)
+            gpio_put(BUZZER_PIN, 1);
+            sleep_us(t);
+            gpio_put(BUZZER_PIN, 0);
+            sleep_us(t);
         }
     }
 }
 
 void play_right() {
-    int freqs[2] = {120, 550}; // Frequencies for the "wrong" tantaaan sound
-    int duration_ms = 80; // Each tone will last for 500 milliseconds
+    int freqs[2] = {120, 550};
+    int duration_ms = 80;
     for (int i = 0; i < 2; i++) {
-        int t = 1000000 / (freqs[i] * 2); // Calculate the time period for the tone
-        int n = duration_ms * 1000 / (t * 2); // Calculate the number of cycles based on the duration and time period
+        int t = 1000000 / (freqs[i] * 2);
+        int n = duration_ms * 1000 / (t * 2);
         for (int j = 0; j < n; j++) {
-            gpio_put(BUZZER_PIN, 1); // Turn on the buzzer
-            sleep_us(t); // Wait for the specified time period
-            gpio_put(BUZZER_PIN, 0); // Turn off the buzzer
-            sleep_us(t); // Wait for the same time period (creating the full cycle)
+            gpio_put(BUZZER_PIN, 1);
+            sleep_us(t);
+            gpio_put(BUZZER_PIN, 0);
+            sleep_us(t);
         }
     }
 }
 
-
 int muda_sequencia(int sequencia[], int tamanho_sequencia){
+    srand((unsigned int)time(NULL));
     sequencia[tamanho_sequencia] = rand() % 4;
     tamanho_sequencia += 1;
     return tamanho_sequencia;
@@ -187,6 +167,14 @@ void toca_sequencia(int sequencia[], int leds[], int tamanho_sequencia){
         gpio_put(leds[sequencia[i]], 0);
         sleep_ms(100);
     }
+}
+
+void wait_time(){
+    clock_t start_time = clock();
+    while(!start){}
+    clock_t end_time = clock();
+    double time_elapsed = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    srand((unsigned int)time_elapsed);
 }
 
 int main(){
@@ -205,7 +193,8 @@ int main(){
     bool perdeu = false;
 
     while(true){
-        if ((win_streak == tamanho_sequencia && !perdeu) || (perdeu && start)) {
+        wait_time();
+        if ((win_streak == tamanho_sequencia && !perdeu && start) || (perdeu && start)) {
             perdeu = false;
 
             sleep_ms(1000);
@@ -215,7 +204,6 @@ int main(){
             win_streak = 0;
 
             for(int i = 0; i < tamanho_sequencia; i++){
-                printf("começou\n");
                 
                 while (!btn_b_state && !btn_g_state && !btn_r_state && !btn_y_state);
                 printf("passou do while\n");
@@ -280,11 +268,3 @@ int main(){
         }
     }
 }
-
-            // } else {
-            //     play_sound(4);
-            //     start = false;
-            //     acertou = true;
-            //     memset(sequencia, 0, tamanho_sequencia);
-            //     break;
-            // }
