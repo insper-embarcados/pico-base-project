@@ -96,8 +96,6 @@ int main() {
         //Define Parâmetros iniciais do jogo ____________________________________________________________________________________________________
         int rodada = 0; //rodada
 
-        PRESSED_START = 0; //Reseta o botão de start
-
         int tamanho_sequencia = 100000; //tamanho da sequência (grande o suficiente para nenhum ser humano conseguir ganhar o jogo)
         char sequencia[tamanho_sequencia + 1]; // Definindo a lista com a sequencia de cores (+1 para o caractere nulo)
 //Tempo inicial do jogo --> Seed para a geração de números aleatórios
@@ -153,6 +151,8 @@ int main() {
         //Fim de jogo
         printf("Fim de jogo! Você chegou até a rodada %d", rodada);
         mostraAcertos(rodada);
+        PRESSED_START = 0; //Reseta o botão de start
+
         return 0;
     }
 }
