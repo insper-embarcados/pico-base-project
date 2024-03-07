@@ -52,7 +52,7 @@ void mostraCor(char cor, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZ
     pisca_led(cor, t_delay, LED_AZUL, LED_VERMELHO, LED_VERDE);
 
     //Toca som
-    buzz(cor, t_delay, int BUZZER);
+    buzz(cor, t_delay, BUZZER);
 }
 
 
