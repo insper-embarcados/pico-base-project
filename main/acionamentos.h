@@ -1,5 +1,3 @@
-
-
 // Pinos dos botões e LEDs
 const int BTN_B = 6;
 const int BTN_G = 7;
