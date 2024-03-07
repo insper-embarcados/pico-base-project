@@ -106,8 +106,8 @@ int main() {
         while (inGame) {
             if (PRESSED_START) { //So começa o jogo quando o botão de start é pressionado
                 char sequenciaRodada[rodada]; //A sequencia da rodada é a sequencia até a rodada atual
-                char sequenciaJogador[rodada+1]; //A sequencia do jogador é a sequencia até a rodada atual
-                sequenciaJogador[rodada] = '\0'; //Adiciona o caractere nulo no final da sequencia do jogador
+                //char sequenciaJogador[rodada+1]; //A sequencia do jogador é a sequencia até a rodada atual
+                //sequenciaJogador[rodada] = '\0'; //Adiciona o caractere nulo no final da sequencia do jogador
 
                 int t_delay = calcularTempo(rodada); //Calcula o tempo de delay para mostrar a sequencia
 
@@ -118,22 +118,22 @@ int main() {
                     char cor = sequenciaRodada[i];
                     while (true) {
                         if (PRESSED_B && cor == 'B') {
-                            sequenciaJogador[i] = 'B';
+                            //sequenciaJogador[i] = 'B';
                             PRESSED_B = false;
                             break;
                         }
                         if (PRESSED_G && cor == 'G') {
-                            sequenciaJogador[i] = 'G';
+                            //sequenciaJogador[i] = 'G';
                             PRESSED_G = false;
                             break;
                         }
                         if (PRESSED_R && cor == 'R') {
-                            sequenciaJogador[i] = 'R';
+                            //sequenciaJogador[i] = 'R';
                             PRESSED_R = false;
                             break;
                         }
                         if (PRESSED_Y && cor == 'Y') {
-                            sequenciaJogador[i] = 'Y';
+                            //sequenciaJogador[i] = 'Y';
                             PRESSED_Y = false;
                             break;
                         }
@@ -150,7 +150,7 @@ int main() {
 
         //Fim de jogo
         printf("Fim de jogo! Você chegou até a rodada %d", rodada);
-        mostraAcertos(rodada);
+        mostrarAcertos(rodada, BUZZER, LED_R, LED_G, LED_B);
         PRESSED_START = 0; //Reseta o botão de start
 
         return 0;

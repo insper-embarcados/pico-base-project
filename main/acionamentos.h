@@ -1,9 +1,9 @@
-#include "acionamentos.c"
+
 
 // Pinos dos botões e LEDs
 const int BTN_B = 6;
 const int BTN_G = 7;
-const int BTN_R = 8;s
+const int BTN_R = 8;
 const int BTN_Y = 9;
 const int BTN_START = 20;
 

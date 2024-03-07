@@ -1,4 +1,4 @@
-add_executable(main main.c acionamentos.h game_features.h) 
+add_executable(main main.c) 
 
 # pull in common dependencies
 target_link_libraries(main pico_stdlib)

@@ -1,5 +1,4 @@
 #include "game_features.h"
-
 //Aumento de dificuldade progressivo
 int calcularTempo(int rodada) {
 
