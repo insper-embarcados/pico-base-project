@@ -1,3 +1,6 @@
+#ifndef ACIONAMENTOS_H
+#define ACIONAMENTOS_H
+
 // Pinos dos botões e LEDs
 const int BTN_B = 6;
 const int BTN_G = 7;
@@ -21,3 +24,5 @@ volatile int PRESSED_START = 0;
 
 void buzz(char cor, int tempo, int BUZZER);
 void pisca_led(int cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE);
+
+#endif 
