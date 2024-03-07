@@ -5,40 +5,41 @@
 #include "game_features.h"
 
 // Pinos dos botões e LEDs
-const int BTN_B = 14;
-const int BTN_G = 15;
-const int BTN_R = 14;
-const int BTN_Y = 15;
-const int BTN_START = 14;
+const int BTN_B = 13;
+const int BTN_G = 14;
+const int BTN_R = 15;
+const int BTN_Y = 16;
+const int BTN_START = 17;
 
-const int BUZZER = 16;
+const int BUZZER = 18;
 
-const int LED_B = 14;
-const int LED_G = 15;
-const int LED_R = 14;
-const int LED_Y = 15;
+const int LED_B = 6;
+const int LED_G = 7;
+const int LED_R = 8;
+
 
 // Flags para os botões
 volatile bool PRESSED_B = false;
 volatile bool PRESSED_G = false;
 volatile bool PRESSED_R = false;
 volatile bool PRESSED_Y = false;
-volatile inr PRESSED_START = 0;
+volatile int PRESSED_START = 0;
 
 // Mostra a sequência de cores e define qual vai ser a sequência da rodada
 void mostrarSequencia(char* sequencia, int rodada, char* sequenciaRodada, int t_delay, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
     char cor;
-    char sequenciaRodada[rodada+1]; //+1 para o caractere nulo
+
     for (int i = 0; i < rodada; i++) {
         cor = sequencia[i];
 
         //Adiciona a cor na sequencia da rodada
         sequenciaRodada[i] = cor;
 
-        mostraCor(char cor, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL, int t_delay)
+        mostraCor(cor, BUZZER, LED_VERMELHO, LED_VERDE, LED_AZUL, t_delay);
     }
     sequenciaRodada[rodada] = '\0';
 }
+
 
 // Callbacks dos botões
 void btn_callback_b(uint gpio, uint32_t events) {
@@ -111,13 +112,13 @@ int main() {
     // Inicializa os LEDs
     // LED B
     gpio_init(LED_B);
-    gpio_set_dir(LED_B, GPIO_IN);
+    gpio_set_dir(LED_B, GPIO_OUT);
     // LED G
     gpio_init(LED_G);
-    gpio_set_dir(LED_G, GPIO_IN);
+    gpio_set_dir(LED_G, GPIO_OUT);
     // LED R
     gpio_init(LED_R);
-    gpio_set_dir(LED_R, GPIO_IN);
+    gpio_set_dir(LED_R, GPIO_OUT);
 
     stdio_init_all();
 
@@ -182,7 +183,7 @@ int main() {
 
         //Fim de jogo
         printf("Fim de jogo! Você chegou até a rodada %d", rodada);
-        mostraAcertos(rodadas);
+        mostraAcertos(rodada);
         return 0;
     }
 }
