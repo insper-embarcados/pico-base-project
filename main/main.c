@@ -4,43 +4,6 @@
 #include "acionamentos.h"
 #include "game_features.h"
 
-// Pinos dos botões e LEDs
-const int BTN_B = 13;
-const int BTN_G = 14;
-const int BTN_R = 15;
-const int BTN_Y = 16;
-const int BTN_START = 17;
-
-const int BUZZER = 18;
-
-const int LED_B = 6;
-const int LED_G = 7;
-const int LED_R = 8;
-
-
-// Flags para os botões
-volatile bool PRESSED_B = false;
-volatile bool PRESSED_G = false;
-volatile bool PRESSED_R = false;
-volatile bool PRESSED_Y = false;
-volatile int PRESSED_START = 0;
-
-// Mostra a sequência de cores e define qual vai ser a sequência da rodada
-void mostrarSequencia(char* sequencia, int rodada, char* sequenciaRodada, int t_delay, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
-    char cor;
-
-    for (int i = 0; i < rodada; i++) {
-        cor = sequencia[i];
-
-        //Adiciona a cor na sequencia da rodada
-        sequenciaRodada[i] = cor;
-
-        mostraCor(cor, BUZZER, LED_VERMELHO, LED_VERDE, LED_AZUL, t_delay);
-    }
-    sequenciaRodada[rodada] = '\0';
-}
-
-
 // Callbacks dos botões
 void btn_callback_b(uint gpio, uint32_t events) {
     if (events == 0x4) { // fall edge
@@ -122,6 +85,13 @@ int main() {
 
     stdio_init_all();
 
+    while(!PRESSED_START){
+
+    }
+
+    uint64_t tempo_inicial = to_us_since_boot(get_absolute_time());
+
+
     while (true) {
         //Define Parâmetros iniciais do jogo ____________________________________________________________________________________________________
         int rodada = 0; //rodada
@@ -130,8 +100,7 @@ int main() {
 
         int tamanho_sequencia = 100000; //tamanho da sequência (grande o suficiente para nenhum ser humano conseguir ganhar o jogo)
         char sequencia[tamanho_sequencia + 1]; // Definindo a lista com a sequencia de cores (+1 para o caractere nulo)
-
-        uint64_t tempo_inicial = time_us_64(); //Tempo inicial do jogo --> Seed para a geração de números aleatórios
+//Tempo inicial do jogo --> Seed para a geração de números aleatórios
         geraSequencia(sequencia, tamanho_sequencia, tempo_inicial); //Gera a sequência de cores aleatórias
 
         int inGame = 1; //Flag para começar o jogo
