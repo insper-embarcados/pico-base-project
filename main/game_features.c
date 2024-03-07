@@ -1,6 +1,6 @@
 #include "game_features.h"
-#include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h> // Para a função rand()
+
 
 //Aumento de dificuldade progressivo
 int calcularTempo(int rodada) {
@@ -41,7 +41,7 @@ void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicia
 // Mostra a quantidade de acertos
 void mostrarAcertos(int acertos, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
     // Indica que o jogador errou a sequencia
-    buzzer('F', 200, BUZZER);
+    buzz('F', 200, BUZZER);
     pisca_led('R', 200, LED_AZUL, LED_VERMELHO, LED_VERDE);
 
     // Mostra a quantidade de acertos

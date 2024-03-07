@@ -1,6 +1,8 @@
 #include "acionamentos.h"
 #include <stdio.h>
 #include <unistd.h> 
+#include "pico/stdlib.h"
+#include <pico/time.h> 
 
 // Definição das constantes
 const int BTN_B = 6;
@@ -55,7 +57,8 @@ void buzz(char cor, int tempo, int BUZZER){
     }
 }
 
-void pisca_led(int cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE){
+
+void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE){
     if (cor == 'B'){
         gpio_put(LED_AZUL, 1);
         sleep_ms(t_delay);
