@@ -132,7 +132,7 @@ int main() {
         char sequencia[tamanho_sequencia + 1]; // Definindo a lista com a sequencia de cores (+1 para o caractere nulo)
 
         uint64_t tempo_inicial = time_us_64(); //Tempo inicial do jogo --> Seed para a geração de números aleatórios
-        geraSequencia(sequencia, tamanho_sequencia, tempo_inicial) //Gera a sequência de cores aleatórias
+        geraSequencia(sequencia, tamanho_sequencia, tempo_inicial); //Gera a sequência de cores aleatórias
 
         int inGame = 1; //Flag para começar o jogo
 
@@ -144,7 +144,7 @@ int main() {
 
                 int t_delay = calcularTempo(rodada); //Calcula o tempo de delay para mostrar a sequencia
 
-                mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, int BUZZER, int LED_R, int LED_G, int LED_B); //O tamanho da sequencia é a rodada, de forma que a sequencia é mostrada até a rodada atual
+                mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B); //O tamanho da sequencia é a rodada, de forma que a sequencia é mostrada até a rodada atual
 
                 //Aguarda o jogador apertar as cores
                 for (int i = 0; i < rodada; i++) {
