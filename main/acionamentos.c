@@ -5,10 +5,10 @@
 #include <pico/time.h> 
 
 // Definição das constantes
-const int BTN_B = 6;
-const int BTN_G = 7;
-const int BTN_R = 8;
-const int BTN_Y = 9;
+const int BTN_B = 14;
+const int BTN_G = 13;
+const int BTN_R = 12;
+const int BTN_Y = 15;
 const int BTN_START = 20;
 
 const int BUZZER = 19;
