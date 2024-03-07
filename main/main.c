@@ -98,13 +98,14 @@ int main() {
 
         int tamanho_sequencia = 100000; //tamanho da sequência (grande o suficiente para nenhum ser humano conseguir ganhar o jogo)
         char sequencia[tamanho_sequencia + 1]; // Definindo a lista com a sequencia de cores (+1 para o caractere nulo)
-//Tempo inicial do jogo --> Seed para a geração de números aleatórios
+        //Tempo inicial do jogo --> Seed para a geração de números aleatórios
         geraSequencia(sequencia, tamanho_sequencia, tempo_inicial); //Gera a sequência de cores aleatórias
 
         int inGame = 1; //Flag para começar o jogo
 
         while (inGame) {
             if (PRESSED_START) { //So começa o jogo quando o botão de start é pressionado
+                printf('Pressed Start');
                 char sequenciaRodada[rodada]; //A sequencia da rodada é a sequencia até a rodada atual
                 //char sequenciaJogador[rodada+1]; //A sequencia do jogador é a sequencia até a rodada atual
                 //sequenciaJogador[rodada] = '\0'; //Adiciona o caractere nulo no final da sequencia do jogador
