@@ -2,20 +2,21 @@
 #include "hardware/gpio.h"
 
 void buzz(char cor, int tempo, int BUZZER){ 
+    int freq;
     if (cor == 'B'){
-        int freq = 494;
+        freq = 494;
     }
     else if (cor == 'G'){
-        int freq = 329;
+        freq = 329;
     }
     else if (cor == 'R'){
-        int freq = 261;
+        freq = 261;
     }
     else if (cor == 'Y'){
-        int freq = 392;
+        freq = 392;
     }
     else if (cor == 'F'){ // F de fail
-        int freq = 800;
+        freq = 800;
     }
 
     int i;
