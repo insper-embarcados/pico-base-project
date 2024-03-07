@@ -1,4 +1,30 @@
 #include "acionamentos.h"
+#include <stdio.h>
+#include <unistd.h> 
+
+// Definição das constantes
+const int BTN_B = 6;
+const int BTN_G = 7;
+const int BTN_R = 8;
+const int BTN_Y = 9;
+const int BTN_START = 20;
+
+const int BUZZER = 19;
+const int LED_B = 16;
+const int LED_G = 17;
+const int LED_R = 18;
+
+// Definição das variáveis globais
+volatile bool PRESSED_B = false;
+volatile bool PRESSED_G = false;
+volatile bool PRESSED_R = false;
+volatile bool PRESSED_Y = false;
+volatile int PRESSED_START = 0;
+
+// Implementação das funções buzz e pisca_led
+// ...
+
+
 
 void buzz(char cor, int tempo, int BUZZER){ 
     int freq;

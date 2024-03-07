@@ -1,4 +1,7 @@
 #include "game_features.h"
+#include <stdio.h>
+#include <stdlib.h> 
+
 //Aumento de dificuldade progressivo
 int calcularTempo(int rodada) {
 
@@ -26,6 +29,8 @@ void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicia
         
     for (int i = 0; i < tamanho_sequencia; i++) {
         // Atribui uma cor aleatória a cada posição do vetor
+        #include <stdlib.h> // Include the <stdlib.h> header file for the 'rand' function
+
         sequencia[i] = cores[rand() % 4];
     }
     // Adiciona o caractere nulo ao final da sequência

@@ -1,26 +1,27 @@
 #ifndef ACIONAMENTOS_H
 #define ACIONAMENTOS_H
 
-// Pinos dos botões e LEDs
-const int BTN_B = 6;
-const int BTN_G = 7;
-const int BTN_R = 8;
-const int BTN_Y = 9;
-const int BTN_START = 20;
+#include <stdbool.h>
 
-const int BUZZER = 19;
+// Declaração dos pinos dos botões e LEDs como externos
+extern const int BTN_B;
+extern const int BTN_G;
+extern const int BTN_R;
+extern const int BTN_Y;
+extern const int BTN_START;
 
-const int LED_B = 16;
-const int LED_G = 17;
-const int LED_R = 18;
+extern const int BUZZER;
 
+extern const int LED_B;
+extern const int LED_G;
+extern const int LED_R;
 
-// Flags para os botões
-volatile bool PRESSED_B = false;
-volatile bool PRESSED_G = false;
-volatile bool PRESSED_R = false;
-volatile bool PRESSED_Y = false;
-volatile int PRESSED_START = 0;
+// Declaração das flags para os botões como externas
+extern volatile bool PRESSED_B;
+extern volatile bool PRESSED_G;
+extern volatile bool PRESSED_R;
+extern volatile bool PRESSED_Y;
+extern volatile int PRESSED_START;
 
 void buzz(char cor, int tempo, int BUZZER);
 void pisca_led(int cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE);
