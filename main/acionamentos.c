@@ -16,16 +16,6 @@ const int LED_B = 15;
 const int LED_G = 16;
 const int LED_R = 26;
 
-// Definição das variáveis globais
-volatile bool PRESSED_B = false;
-volatile bool PRESSED_G = false;
-volatile bool PRESSED_R = false;
-volatile bool PRESSED_Y = false;
-volatile int PRESSED_START = 0;
-
-// Implementação das funções buzz e pisca_led
-// ...
-
 
 
 void buzz(char cor, int tempo, int BUZZER){ 

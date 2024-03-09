@@ -16,10 +16,10 @@ extern const int LED_G;
 extern const int LED_R;
 
 // Declaração das variáveis globais (valores serão definidos em acionamentos.c)
-extern volatile bool PRESSED_B;
-extern volatile bool PRESSED_G;
-extern volatile bool PRESSED_R;
-extern volatile bool PRESSED_Y;
+extern volatile int PRESSED_B;
+extern volatile int PRESSED_G;
+extern volatile int PRESSED_R;
+extern volatile int PRESSED_Y;
 extern volatile int PRESSED_START;
 
 void buzz(char cor, int tempo, int BUZZER);

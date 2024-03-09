@@ -35,6 +35,9 @@ void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicia
     }
     // Adiciona o caractere nulo ao final da sequência
     sequencia[tamanho_sequencia] = '\0';
+
+    //Imprime a sequencia gerada -- Debug
+    // printf("Sequencia gerada: %s\n", sequencia);
 }
 
 
@@ -52,6 +55,9 @@ void mostrarAcertos(int acertos, int BUZZER, int LED_VERMELHO, int LED_VERDE, in
 }
 
 void mostraCor(char cor, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL, int t_delay){
+    //Print
+    printf("Cor: %c\n", cor);
+
     //Pisca LED
     pisca_led(cor, t_delay, LED_AZUL, LED_VERMELHO, LED_VERDE);
 

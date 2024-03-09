@@ -4,37 +4,38 @@
 #include "acionamentos.h"
 #include "game_features.h"
 
+// Definição das variáveis globais
+volatile int PRESSED_B = 0;
+volatile int PRESSED_G = 0;
+volatile int PRESSED_R = 0;
+volatile int PRESSED_Y = 0;
+volatile int PRESSED_START = 0;
+
 // Callbacks dos botões
-void btn_callback_b(uint gpio, uint32_t events) {
+void btn_callback(uint gpio, uint32_t events) {
     if (events == 0x4) { // fall edge
-        PRESSED_B = true;
+        if (gpio == BTN_B){
+            printf("Pressed B \n");
+            PRESSED_B = 1;
+        }
+        if (gpio == BTN_G){
+            printf("Pressed G \n");
+            PRESSED_G = 1;
+        }
+        if (gpio == BTN_R){
+            printf("Pressed R \n");
+            PRESSED_R = 1;
+        }
+        if (gpio == BTN_Y){
+            printf("Pressed Y \n");
+            PRESSED_Y = 1;
+        }
+        if (gpio == BTN_START){
+            printf("Pressed Start \n");
+            PRESSED_START = 1;
+        }
     }
 }
-
-void btn_callback_g(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
-        PRESSED_G = true;
-    }
-}
-
-void btn_callback_r(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
-        PRESSED_R = true;
-    }
-}
-
-void btn_callback_y(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
-        PRESSED_Y = true;
-    }
-}
-
-void btn_callback_start(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
-        PRESSED_START = 1;
-    }
-}
-
 
 int main() {
     //Inicializa perifericos ____________________________________________________________________________________________________
@@ -62,11 +63,11 @@ int main() {
     gpio_pull_up(BTN_START);
 
     // Configura os callbacks dos botões
-    gpio_set_irq_enabled_with_callback(BTN_B, GPIO_IRQ_EDGE_FALL, true, &btn_callback_b);
-    gpio_set_irq_enabled_with_callback(BTN_G, GPIO_IRQ_EDGE_FALL, true, &btn_callback_g);
-    gpio_set_irq_enabled_with_callback(BTN_R, GPIO_IRQ_EDGE_FALL, true, &btn_callback_r);
-    gpio_set_irq_enabled_with_callback(BTN_Y, GPIO_IRQ_EDGE_FALL, true, &btn_callback_y);
-    gpio_set_irq_enabled_with_callback(BTN_START, GPIO_IRQ_EDGE_FALL, true, &btn_callback_start);
+    gpio_set_irq_enabled_with_callback(BTN_B, GPIO_IRQ_EDGE_FALL, true, &btn_callback);
+    gpio_set_irq_enabled(BTN_G, GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(BTN_R, GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(BTN_Y, GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(BTN_START, GPIO_IRQ_EDGE_FALL, true);
 
     // Inicializa o buzzer
     gpio_init(BUZZER);
@@ -105,44 +106,48 @@ int main() {
 
         while (inGame) {
             if (PRESSED_START) { //So começa o jogo quando o botão de start é pressionado
-                printf('Pressed Start');
+                printf("Pressed Start \n");
                 char sequenciaRodada[rodada]; //A sequencia da rodada é a sequencia até a rodada atual
                 //char sequenciaJogador[rodada+1]; //A sequencia do jogador é a sequencia até a rodada atual
                 //sequenciaJogador[rodada] = '\0'; //Adiciona o caractere nulo no final da sequencia do jogador
 
                 int t_delay = calcularTempo(rodada); //Calcula o tempo de delay para mostrar a sequencia
 
-                mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B); //O tamanho da sequencia é a rodada, de forma que a sequencia é mostrada até a rodada atual
 
                 //Aguarda o jogador apertar as cores
                 for (int i = 0; i < rodada; i++) {
                     char cor = sequenciaRodada[i];
-                    while (true) {
+                    mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B); //O tamanho da sequencia é a rodada, de forma que a sequencia é mostrada até a rodada atual
+                    int esperando_cor = 1;
+                    while (esperando_cor) {
                         if (PRESSED_B && cor == 'B') {
                             //sequenciaJogador[i] = 'B';
-                            PRESSED_B = false;
-                            break;
+                            esperando_cor = 0;
                         }
                         if (PRESSED_G && cor == 'G') {
                             //sequenciaJogador[i] = 'G';
-                            PRESSED_G = false;
-                            break;
+                            esperando_cor = 0;
                         }
                         if (PRESSED_R && cor == 'R') {
                             //sequenciaJogador[i] = 'R';
-                            PRESSED_R = false;
-                            break;
+                            esperando_cor = 0;
                         }
                         if (PRESSED_Y && cor == 'Y') {
                             //sequenciaJogador[i] = 'Y';
-                            PRESSED_Y = false;
-                            break;
+                            esperando_cor = 0;
                         }
                         else {
                             inGame = 0; //Se o jogador errar a sequencia, o jogo acaba
                         }
                     }
-                }        
+                }
+                
+                //Reseta Flags
+                PRESSED_B = 0;
+                PRESSED_G = 0;
+                PRESSED_R = 0;
+                PRESSED_Y = 0;
+        
                 rodada++; //Aumenta a rodada
             }
 
@@ -151,7 +156,7 @@ int main() {
 
         //Fim de jogo
         printf("Fim de jogo! Você chegou até a rodada %d", rodada);
-        mostrarAcertos(rodada, BUZZER, LED_R, LED_G, LED_B);
+        mostrarAcertos(rodada-1, BUZZER, LED_R, LED_G, LED_B);
         PRESSED_START = 0; //Reseta o botão de start
 
         return 0;
