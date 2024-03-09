@@ -12,8 +12,16 @@ volatile int PRESSED_Y = 0;
 volatile int PRESSED_START = 0;
 
 // Callbacks dos botões
+#define DEBOUNCE_MS 200 // Atraso de debounce de 200 milissegundos
+
+// Variável para armazenar a última vez que um botão foi pressionado
+uint64_t last_press_time = 0;
+
+// Callbacks dos botões
 void btn_callback(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
+    uint64_t now = to_us_since_boot(get_absolute_time());
+    if (events == 0x4 && (now - last_press_time > DEBOUNCE_MS * 1000)) { // fall edge e debounce
+        last_press_time = now;
         if (gpio == BTN_B){
             printf("Pressed B \n");
             PRESSED_B = 1;
@@ -31,14 +39,13 @@ void btn_callback(uint gpio, uint32_t events) {
             PRESSED_Y = 1;
         }
         if (gpio == BTN_START){
-            printf("Pressed Start \n");
             PRESSED_START = 1;
         }
     }
 }
 
 int main() {
-    //Inicializa perifericos ____________________________________________________________________________________________________
+    //Inicializa perifericos __________________________________
 
     // Inicializa os botões
     // Botão B
@@ -94,7 +101,7 @@ int main() {
 
 
     while (true) {
-        //Define Parâmetros iniciais do jogo ____________________________________________________________________________________________________
+        //Define Parâmetros iniciais do jogo __________________________________
         int rodada = 0; //rodada
 
         int tamanho_sequencia = 100000; //tamanho da sequência (grande o suficiente para nenhum ser humano conseguir ganhar o jogo)
@@ -105,53 +112,48 @@ int main() {
         int inGame = 1; //Flag para começar o jogo
 
         while (inGame) {
-            if (PRESSED_START) { //So começa o jogo quando o botão de start é pressionado
-                printf("Pressed Start \n");
-                char sequenciaRodada[rodada]; //A sequencia da rodada é a sequencia até a rodada atual
-                //char sequenciaJogador[rodada+1]; //A sequencia do jogador é a sequencia até a rodada atual
-                //sequenciaJogador[rodada] = '\0'; //Adiciona o caractere nulo no final da sequencia do jogador
+            if (PRESSED_START) {
+                char sequenciaRodada[rodada];
+                int t_delay = calcularTempo(rodada);
 
-                int t_delay = calcularTempo(rodada); //Calcula o tempo de delay para mostrar a sequencia
-
-
-                //Aguarda o jogador apertar as cores
+                bool errou = false;
                 for (int i = 0; i < rodada; i++) {
                     char cor = sequenciaRodada[i];
-                    mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B); //O tamanho da sequencia é a rodada, de forma que a sequencia é mostrada até a rodada atual
-                    int esperando_cor = 1;
-                    while (esperando_cor) {
-                        if (PRESSED_B && cor == 'B') {
-                            //sequenciaJogador[i] = 'B';
-                            esperando_cor = 0;
-                        }
-                        if (PRESSED_G && cor == 'G') {
-                            //sequenciaJogador[i] = 'G';
-                            esperando_cor = 0;
-                        }
-                        if (PRESSED_R && cor == 'R') {
-                            //sequenciaJogador[i] = 'R';
-                            esperando_cor = 0;
-                        }
-                        if (PRESSED_Y && cor == 'Y') {
-                            //sequenciaJogador[i] = 'Y';
-                            esperando_cor = 0;
-                        }
-                        else {
-                            inGame = 0; //Se o jogador errar a sequencia, o jogo acaba
+                    mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B);
+
+                    while (!errou) {
+                        if (PRESSED_B || PRESSED_G || PRESSED_R || PRESSED_Y) {
+                            if (PRESSED_B && cor == 'B') {
+                                
+                            }
+                            else if (PRESSED_G && cor == 'G') {
+                                
+                            }
+                            else if (PRESSED_R && cor == 'R') {
+                                
+                            }
+                            else if (PRESSED_Y && cor == 'Y') {
+                                
+                            }
+                            else{
+                                errou = true;
+                                inGame = 0; // Sai do loop
+                            }
+                            
+                            // Reseta as flags para a próxima iteração
+                            PRESSED_B = 0;
+                            PRESSED_G = 0;
+                            PRESSED_R = 0;
+                            PRESSED_Y = 0;
                         }
                     }
+
                 }
-                
-                //Reseta Flags
-                PRESSED_B = 0;
-                PRESSED_G = 0;
-                PRESSED_R = 0;
-                PRESSED_Y = 0;
-        
-                rodada++; //Aumenta a rodada
+
+                if (!errou) {
+                    rodada++; // Aumenta a rodada apenas se todas as cores corretas forem pressionadas
+                }
             }
-
-
         }
 
         //Fim de jogo
