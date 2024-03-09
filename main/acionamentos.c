@@ -5,16 +5,16 @@
 #include <pico/time.h> 
 
 // Definição das constantes
-const int BTN_B = 14;
-const int BTN_G = 13;
-const int BTN_R = 12;
-const int BTN_Y = 15;
-const int BTN_START = 20;
+const int BTN_B = 18;
+const int BTN_G = 19;
+const int BTN_R = 20;
+const int BTN_Y = 17;
+const int BTN_START = 21;
 
-const int BUZZER = 19;
-const int LED_B = 16;
-const int LED_G = 17;
-const int LED_R = 18;
+const int BUZZER = 14;
+const int LED_B = 15;
+const int LED_G = 16;
+const int LED_R = 26;
 
 // Definição das variáveis globais
 volatile bool PRESSED_B = false;
