@@ -12,6 +12,10 @@ const int LED_PIN_B = 19;
 const int LED_PIN_Y = 20;
 const int LED_PIN_G = 21;
 
+const int LED_RGB_R = 9;
+const int LED_RGB_G = 10;
+const int LED_RGB_B = 11;
+
 const int BTN_PIN_Y = 2;
 const int BTN_PIN_R = 3;
 const int BTN_PIN_B = 4;
@@ -21,8 +25,8 @@ const int BTN_PIN_START = 14;
 
 const int BUZZER_PIN = 16;
 
-const int BTN_MODE_RED = 8;
-const int BTN_MODE_BLUE = 15;
+const int BTN_MODE_RED = 8; // sem som, so led
+const int BTN_MODE_BLUE = 15; // so som, sem led
 
 volatile bool btn_y_state = false;
 volatile bool btn_r_state = false;
@@ -35,6 +39,10 @@ volatile bool mode_black = false;
 
 volatile bool mode_red = false;
 volatile bool mode_blue = false;
+
+const int freqs_jogo[5] = {4000, 5000, 6000, 7000, 10000};
+const int freqs_wrong[4] = {440, 304, 261, 220};
+const int freqs_right[2] = {120, 550};
 
 void btn_callback(uint gpio, uint32_t events) {
     if(gpio == BTN_PIN_R && events == GPIO_IRQ_EDGE_FALL){
@@ -67,6 +75,13 @@ void inicializa_dispositivos(){
     gpio_set_dir(LED_PIN_Y, GPIO_OUT);
     gpio_init(LED_PIN_G);
     gpio_set_dir(LED_PIN_G, GPIO_OUT);
+
+    gpio_init(LED_RGB_R);
+    gpio_set_dir(LED_RGB_R, GPIO_OUT);
+    gpio_init(LED_RGB_G);
+    gpio_set_dir(LED_RGB_G, GPIO_OUT);
+    gpio_init(LED_RGB_B);
+    gpio_set_dir(LED_RGB_B, GPIO_OUT);
 
     gpio_init(BTN_PIN_R);
     gpio_set_dir(BTN_PIN_R, GPIO_IN);
@@ -109,9 +124,8 @@ void inicializa_dispositivos(){
 }
 
 void play_sound(int indice) {
-    int freqs[5] = {4000, 5000, 6000, 7000, 10000};
     int duration_ms = 10000;
-    int t = 1000000/(freqs[indice]*2); // o 10^6 eh pq estamos convertendo para microsegundos e t = 1/f, e dividimos por 2 por ser metade da onda ligada e metade desligada
+    int t = 1000000/(freqs_jogo[indice]*2); // o 10^6 eh pq estamos convertendo para microsegundos e t = 1/f, e dividimos por 2 por ser metade da onda ligada e metade desligada
     int n = duration_ms / 10; // quantidade de vezes que fazemos a onda inteira
     for(int i = 0; i < n; i++){
         gpio_put(BUZZER_PIN, 1);
@@ -122,10 +136,9 @@ void play_sound(int indice) {
 }
 
 void play_wrong() {
-    int freqs[4] = {440, 304, 261, 220};
     int duration_ms = 200;
     for (int i = 0; i < 4; i++) {
-        int t = 1000000 / (freqs[i] * 2);
+        int t = 1000000 / (freqs_wrong[i] * 2);
         int n = duration_ms * 1000 / (t * 2);
         for (int j = 0; j < n; j++) {
             gpio_put(BUZZER_PIN, 1);
@@ -137,10 +150,9 @@ void play_wrong() {
 }
 
 void play_right() {
-    int freqs[2] = {120, 550};
     int duration_ms = 80;
     for (int i = 0; i < 2; i++) {
-        int t = 1000000 / (freqs[i] * 2);
+        int t = 1000000 / (freqs_right[i] * 2);
         int n = duration_ms * 1000 / (t * 2);
         for (int j = 0; j < n; j++) {
             gpio_put(BUZZER_PIN, 1);
@@ -189,32 +201,79 @@ void wait_time(){
     srand((unsigned int)time_elapsed);
 }
 
-void play_fail_song() {
-    // Define the frequencies for the Mario "fail" song notes
-    #define E4 329
-    #define C4 261
-    #define G4 392
-    #define G3 196
-    #define E3 165
-    #define A3 220
-    #define B3 247
-    #define Bb3 233
+// void play_fail_song() {
+//     // Define the frequencies for the Mario "fail" song notes
+//     #define E4 329
+//     #define C4 261
+//     #define G4 392
+//     #define G3 196
+//     #define E3 165
+//     #define A3 220
+//     #define B3 247
+//     #define Bb3 233
 
-    int frequencies[] = {E4, E4, E4, C4, E4, G4, G3, C4, G3, E3, A3, B3, Bb3, A3};
+//     int frequencies[] = {E4, E4, E4, C4, E4, G4, G3, C4, G3, E3, A3, B3, Bb3, A3};
 
-    int durations[] = {500, 200, 500, 300, 500, 500, 600, 500, 300, 500, 300, 300, 100, 500};
+//     int durations[] = {500, 200, 500, 300, 500, 500, 600, 500, 300, 500, 300, 300, 100, 500};
     
-    for (int i = 0; i < sizeof(frequencies) / sizeof(frequencies[0]); i++) {
-        int t = 1000000 / (frequencies[i] * 2);
-        int n = durations[i] * 1000 / (t * 2);
-        for (int j = 0; j < n; j++) {
-            gpio_put(BUZZER_PIN, 1);
-            sleep_us(t);
-            gpio_put(BUZZER_PIN, 0);
-            sleep_us(t);
-        }
-        sleep_ms(50); // Pause between notes
+//     for (int i = 0; i < sizeof(frequencies) / sizeof(frequencies[0]); i++) {
+//         int t = 1000000 / (frequencies[i] * 2);
+//         int n = durations[i] * 1000 / (t * 2);
+//         for (int j = 0; j < n; j++) {
+//             gpio_put(BUZZER_PIN, 1);
+//             sleep_us(t);
+//             gpio_put(BUZZER_PIN, 0);
+//             sleep_us(t);
+//         }
+//         sleep_ms(50); // Pause between notes
+//     }
+// }
+
+void set_rgb(char c) {
+    if(c == 'r'){
+        gpio_put(LED_RGB_R, 1);
+    } else if(c == 'g'){
+        gpio_put(LED_RGB_G, 1);
+    } else if(c == 'b'){
+        gpio_put(LED_RGB_B, 1);
+    } else if(c == 'y'){
+        gpio_put(LED_RGB_G, 1);
+        gpio_put(LED_RGB_R, 1);
     }
+}
+
+void pisca_rgb_todo(){
+    gpio_put(LED_RGB_B, 1);
+    sleep_ms(300);
+    gpio_put(LED_RGB_G, 1);
+    sleep_ms(300);
+    gpio_put(LED_RGB_B, 0);
+    sleep_ms(300);
+    gpio_put(LED_RGB_R, 1);
+    sleep_ms(300);
+    gpio_put(LED_RGB_G, 0);
+    sleep_ms(300);
+    gpio_put(LED_RGB_R, 0);
+}
+
+void turn_off_rgb(){
+    gpio_put(LED_RGB_B, 0);
+    gpio_put(LED_RGB_G, 0);
+    gpio_put(LED_RGB_R, 0);
+}
+
+void liga_leds(){
+    gpio_put(LED_PIN_B, 1);
+    gpio_put(LED_PIN_G, 1);
+    gpio_put(LED_PIN_R, 1);
+    gpio_put(LED_PIN_Y, 1);
+}
+
+void desliga_leds(){
+    gpio_put(LED_PIN_B, 0);
+    gpio_put(LED_PIN_G, 0);
+    gpio_put(LED_PIN_R, 0);
+    gpio_put(LED_PIN_Y, 0);
 }
 
 int main(){
@@ -236,18 +295,12 @@ int main(){
         if ((win_streak == tamanho_sequencia && !perdeu && start) || (perdeu && start)) {
             perdeu = false;
 
-            gpio_put(LED_PIN_B, 1);
-            gpio_put(LED_PIN_G, 1);
-            gpio_put(LED_PIN_R, 1);
-            gpio_put(LED_PIN_Y, 1);
+            liga_leds();
+            pisca_rgb_todo();
 
             sleep_ms(100);
 
-            gpio_put(LED_PIN_B, 0);
-            gpio_put(LED_PIN_G, 0);
-            gpio_put(LED_PIN_R, 0);
-            gpio_put(LED_PIN_Y, 0);
-
+            desliga_leds();
 
             sleep_ms(1000);
             tamanho_sequencia = muda_sequencia(sequencia, tamanho_sequencia);
@@ -263,23 +316,31 @@ int main(){
 
                 if(btn_b_state && sequencia[i] == 0){
                     gpio_put(LED_PIN_B, 1);
+                    set_rgb('b');
                     sleep_ms(300);
                     gpio_put(LED_PIN_B, 0);
+                    turn_off_rgb();
                     btn_b_state = false;
                 } else if(btn_g_state && sequencia[i] == 1){
                     gpio_put(LED_PIN_G, 1);
+                    set_rgb('g');
                     sleep_ms(300);
+                    turn_off_rgb();
                     gpio_put(LED_PIN_G, 0);
                     btn_g_state = false;
                 } else if(btn_r_state && sequencia[i] == 2){
                     gpio_put(LED_PIN_R, 1);
+                    set_rgb('r');
                     sleep_ms(300);
                     gpio_put(LED_PIN_R, 0);
+                    turn_off_rgb();
                     btn_r_state = false;
                 } else if(btn_y_state && sequencia[i] == 3){
                     gpio_put(LED_PIN_Y, 1);
+                    set_rgb('y');
                     sleep_ms(300);
                     gpio_put(LED_PIN_Y, 0);
+                    turn_off_rgb();
                     btn_y_state = false;
                 } else {
                     break;
@@ -294,30 +355,19 @@ int main(){
                 mode_red = false;
                 mode_blue = false;
 
-                gpio_put(LED_PIN_B, 1);
-                gpio_put(LED_PIN_G, 1);
-                gpio_put(LED_PIN_R, 1);
-                gpio_put(LED_PIN_Y, 1);
+                liga_leds();
+                pisca_rgb_todo();
 
                 play_wrong();
 
-                gpio_put(LED_PIN_B, 0);
-                gpio_put(LED_PIN_G, 0);
-                gpio_put(LED_PIN_R, 0);
-                gpio_put(LED_PIN_Y, 0);
+                desliga_leds();
 
                 sleep_ms(100);
 
                 for (int i = 0; i < tamanho_sequencia-1; i++) { // conta a win streak
-                    gpio_put(LED_PIN_B, 1);
-                    gpio_put(LED_PIN_G, 1);
-                    gpio_put(LED_PIN_R, 1);
-                    gpio_put(LED_PIN_Y, 1);
+                    liga_leds();
                     play_sound(4);
-                    gpio_put(LED_PIN_B, 0);
-                    gpio_put(LED_PIN_G, 0);
-                    gpio_put(LED_PIN_R, 0);
-                    gpio_put(LED_PIN_Y, 0);
+                    desliga_leds();
                     sleep_ms(100);
                 }
 
