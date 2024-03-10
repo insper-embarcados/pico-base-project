@@ -1,6 +1,6 @@
 #include "game_features.h"
 #include <stdlib.h> // Para a função rand()
-
+#include "musicas.h"
 
 //Aumento de dificuldade progressivo
 int calcularTempo(int rodada) {
@@ -24,12 +24,14 @@ int calcularTempo(int rodada) {
 // Gera uma sequência de cores aleatórias
 // A funcao recebe um vetor de caracteres e um inteiro
 void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicial) {
+
+    // Semente para a geração de números aleatórios
+    srand(tempo_inicial);
+
     // Vetor de cores
     char cores[4] = {'R', 'G', 'B', 'Y'};
         
     for (int i = 0; i < tamanho_sequencia; i++) {
-        // Atribui uma cor aleatória a cada posição do vetor
-        #include <stdlib.h> // Include the <stdlib.h> header file for the 'rand' function
 
         sequencia[i] = cores[rand() % 4];
     }
@@ -44,7 +46,7 @@ void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicia
 // Mostra a quantidade de acertos
 void mostrarAcertos(int acertos, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
     // Indica que o jogador errou a sequencia
-    pisca_led('R', 1000, LED_AZUL, LED_VERMELHO, LED_VERDE, BUZZER);
+    playRickRoll(BUZZER,LED_VERMELHO);
 
     // Mostra a quantidade de acertos
     for (int i = 0; i < acertos; i++) {
@@ -65,7 +67,7 @@ void mostraCor(char cor, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZ
 void mostrarSequencia(char* sequencia, int rodada, char* sequenciaRodada, int t_delay, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
 
     sleep_ms(500); // Delay para que não comece a piscar as cores imediatamente após clicar no ultimo botão
-    
+
     for (int i = 0; i < rodada; i++) {
         char cor = sequencia[i];
 
@@ -75,4 +77,3 @@ void mostrarSequencia(char* sequencia, int rodada, char* sequenciaRodada, int t_
     }
     sequenciaRodada[rodada] = '\0';
 }
-

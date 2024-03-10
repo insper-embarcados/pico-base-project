@@ -82,4 +82,11 @@ void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VE
         buzz('F', t_delay, BUZZER);
         gpio_put(LED_VERMELHO, 0);
     }
+    else if (cor == 'S'){ // S de start
+        gpio_put(LED_VERMELHO, 1);
+        gpio_put(LED_AZUL, 1);
+        sleep_ms(200);
+        gpio_put(LED_VERMELHO, 0);
+        gpio_put(LED_AZUL, 0);
+    }
 }

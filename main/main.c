@@ -3,6 +3,7 @@
 #include "hardware/gpio.h"
 #include "acionamentos.h"
 #include "game_features.h"
+#include "musicas.h"
 
 // Definição das variáveis globais
 volatile int PRESSED_B = 0;
@@ -100,15 +101,21 @@ int main() {
 
     stdio_init_all();
 
-    while(!PRESSED_START){
-
-    }
-
-    uint64_t tempo_inicial = to_us_since_boot(get_absolute_time());  //Tempo inicial do jogo --> Seed para a geração de números aleatórios
-
 
     int loopJogo = 1;
     while (loopJogo) {
+        //Intro do jogo
+        while(!PRESSED_START){
+            pisca_led('S', 200, LED_B, LED_R, LED_G, BUZZER);
+        }
+        //Desliga LEDs acesos
+        gpio_put(LED_R, 0);
+        gpio_put(LED_B, 0);
+        playIntro(BUZZER, LED_R, LED_B);
+
+
+        uint64_t tempo_inicial = to_us_since_boot(get_absolute_time());  //Tempo inicial do jogo --> Seed para a geração de números aleatórios
+
         //Define Parâmetros iniciais do jogo __________________________________
         int rodada = 0; //rodada inicial
 
@@ -133,7 +140,7 @@ int main() {
                     }
                     char cor_press = PRESSED_COLOR;
                     pisca_led(cor_press, 200, LED_B, LED_R, LED_G, BUZZER); //Pisca a cor pressionada
-                    
+
                     if (cor_press == cor) {
                     }
                     else if (PRESSED_COLOR != cor && PRESSED_COLOR != 'S') {
@@ -155,6 +162,7 @@ int main() {
         //Fim de jogo
         printf("Fim de jogo! Você chegou até a rodada %d", rodada);
         mostrarAcertos(rodada-1, BUZZER, LED_R, LED_G, LED_B);
+        sleep_ms(2000);
         PRESSED_START = 0; //Reseta o botão de start
 
     }
