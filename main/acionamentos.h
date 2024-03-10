@@ -23,6 +23,6 @@ extern volatile int PRESSED_Y;
 extern volatile int PRESSED_START;
 
 void buzz(char cor, int tempo, int BUZZER);
-void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE);
+void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE, int BUZZER);
 
 #endif // ACIONAMENTOS_H

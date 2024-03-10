@@ -19,6 +19,7 @@
     "cmake.buildBeforeRun": true,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {
-        "game_features.h": "c"
+        "game_features.h": "c",
+        "gpio.h": "c"
     }
 }

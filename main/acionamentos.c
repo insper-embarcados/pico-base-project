@@ -48,31 +48,38 @@ void buzz(char cor, int tempo, int BUZZER){
 }
 
 
-void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE){
+void pisca_led(char cor, int t_delay, int LED_AZUL, int LED_VERMELHO, int LED_VERDE, int BUZZER){
+    //O delay de quanto tempo o led ficará aceso vem do buzzer
     if (cor == 'B'){
+        sleep_ms(t_delay);
         gpio_put(LED_AZUL, 1);
-        sleep_ms(t_delay);
+        buzz('B', t_delay, BUZZER);
         gpio_put(LED_AZUL, 0);
-        sleep_ms(t_delay);
     }
     else if (cor == 'G'){
         gpio_put(LED_VERDE, 1);
-        sleep_ms(t_delay);
+        buzz('G', t_delay, BUZZER);
         gpio_put(LED_VERDE, 0);
         sleep_ms(t_delay);
     }
     else if (cor == 'R'){
+        sleep_ms(t_delay);
         gpio_put(LED_VERMELHO, 1);
-        sleep_ms(t_delay);
+        buzz('R', t_delay, BUZZER);
         gpio_put(LED_VERMELHO, 0);
-        sleep_ms(t_delay);
     }
     else if (cor == 'Y'){
+        sleep_ms(t_delay);
         gpio_put(LED_VERMELHO, 1);
         gpio_put(LED_VERDE, 1);
-        sleep_ms(t_delay);
+        buzz('Y', t_delay, BUZZER);
         gpio_put(LED_VERMELHO, 0);
         gpio_put(LED_VERDE, 0);
+    }
+    else if (cor == 'F'){ // F de fail
         sleep_ms(t_delay);
+        gpio_put(LED_VERMELHO, 1);
+        buzz('F', t_delay, BUZZER);
+        gpio_put(LED_VERMELHO, 0);
     }
 }

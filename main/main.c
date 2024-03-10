@@ -132,10 +132,13 @@ int main() {
                         //Espera o jogador pressionar uma cor
                     }
                     char cor_press = PRESSED_COLOR;
+                    pisca_led(cor_press, 200, LED_B, LED_R, LED_G, BUZZER); //Pisca a cor pressionada
+                    
                     if (cor_press == cor) {
                     }
                     else if (PRESSED_COLOR != cor && PRESSED_COLOR != 'S') {
                         inGame = 0; // Sai do loop
+                        i = rodada; // Sai do loop
                     }
                     // Reseta as flags para a próxima iteração
                     PRESSED_B = 0;
