@@ -6,15 +6,15 @@
 int calcularTempo(int rodada) {
 
     // A cada 5 rodadas, o tempo diminui 200ms e para de diminir em 200ms
-    if (rodada <= 5)
+    if (rodada <= 2)
         return 1000;
-    else if (rodada <= 10)
+    else if (rodada <= 4)
         return 800;
-    else if (rodada <= 15)
+    else if (rodada <= 6)
         return 600;
-    else if (rodada <= 20)
+    else if (rodada <= 8)
         return 400;
-    else if (rodada <= 25)
+    else if (rodada <= 10)
         return 200;
     else
         return 200;
@@ -44,13 +44,13 @@ void geraSequencia(char* sequencia, int tamanho_sequencia, uint64_t tempo_inicia
 // Mostra a quantidade de acertos
 void mostrarAcertos(int acertos, int BUZZER, int LED_VERMELHO, int LED_VERDE, int LED_AZUL) {
     // Indica que o jogador errou a sequencia
-    buzz('F', 200, BUZZER);
-    pisca_led('R', 200, LED_AZUL, LED_VERMELHO, LED_VERDE);
+    buzz('F', 1000, BUZZER);
+    pisca_led('R', 1000, LED_AZUL, LED_VERMELHO, LED_VERDE);
 
     // Mostra a quantidade de acertos
     for (int i = 0; i <= acertos; i++) {
         //Pisca LED
-        pisca_led('B', 500, LED_AZUL, LED_VERMELHO, LED_VERDE);       
+        pisca_led('B', 300, LED_AZUL, LED_VERMELHO, LED_VERDE);       
     }
 }
 

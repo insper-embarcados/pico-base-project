@@ -9,6 +9,7 @@ volatile int PRESSED_B = 0;
 volatile int PRESSED_G = 0;
 volatile int PRESSED_R = 0;
 volatile int PRESSED_Y = 0;
+volatile char PRESSED_COLOR = 'S';
 volatile int PRESSED_START = 0;
 
 // Callbacks dos botões
@@ -23,24 +24,30 @@ void btn_callback(uint gpio, uint32_t events) {
     if (events == 0x4 && (now - last_press_time > DEBOUNCE_MS * 1000)) { // fall edge e debounce
         last_press_time = now;
         if (gpio == BTN_B){
-            printf("Pressed B \n");
+            // printf("Pressed B \n"); //DEBUG
             PRESSED_B = 1;
+            PRESSED_COLOR = 'B';
         }
         if (gpio == BTN_G){
-            printf("Pressed G \n");
+            // printf("Pressed G \n"); // DEBUG
             PRESSED_G = 1;
+            PRESSED_COLOR = 'G';
         }
         if (gpio == BTN_R){
-            printf("Pressed R \n");
+            // printf("Pressed R \n"); // DEBUG
             PRESSED_R = 1;
+            PRESSED_COLOR = 'R';
         }
         if (gpio == BTN_Y){
-            printf("Pressed Y \n");
+            // printf("Pressed Y \n"); // DEBUG
             PRESSED_Y = 1;
+            PRESSED_COLOR = 'Y';
         }
         if (gpio == BTN_START){
+            // printf("Pressed START \n");
             PRESSED_START = 1;
         }
+        // printf("PRESSED COLOR = %c\n", PRESSED_COLOR); //DEBUG
     }
 }
 
@@ -97,63 +104,49 @@ int main() {
 
     }
 
-    uint64_t tempo_inicial = to_us_since_boot(get_absolute_time());
+    uint64_t tempo_inicial = to_us_since_boot(get_absolute_time());  //Tempo inicial do jogo --> Seed para a geração de números aleatórios
 
 
-    while (true) {
+    int loopJogo = 1;
+    while (loopJogo) {
         //Define Parâmetros iniciais do jogo __________________________________
-        int rodada = 0; //rodada
+        int rodada = 0; //rodada inicial
 
         int tamanho_sequencia = 100000; //tamanho da sequência (grande o suficiente para nenhum ser humano conseguir ganhar o jogo)
         char sequencia[tamanho_sequencia + 1]; // Definindo a lista com a sequencia de cores (+1 para o caractere nulo)
-        //Tempo inicial do jogo --> Seed para a geração de números aleatórios
         geraSequencia(sequencia, tamanho_sequencia, tempo_inicial); //Gera a sequência de cores aleatórias
 
         int inGame = 1; //Flag para começar o jogo
 
         while (inGame) {
             if (PRESSED_START) {
+                rodada++;// Aumenta a rodada apenas se todas as cores corretas forem pressionadas
                 char sequenciaRodada[rodada];
                 int t_delay = calcularTempo(rodada);
+                mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B);
 
-                bool errou = false;
                 for (int i = 0; i < rodada; i++) {
                     char cor = sequenciaRodada[i];
-                    mostrarSequencia(sequencia, rodada, sequenciaRodada, t_delay, BUZZER, LED_R, LED_G, LED_B);
 
-                    while (!errou) {
-                        if (PRESSED_B || PRESSED_G || PRESSED_R || PRESSED_Y) {
-                            if (PRESSED_B && cor == 'B') {
-                                
-                            }
-                            else if (PRESSED_G && cor == 'G') {
-                                
-                            }
-                            else if (PRESSED_R && cor == 'R') {
-                                
-                            }
-                            else if (PRESSED_Y && cor == 'Y') {
-                                
-                            }
-                            else{
-                                errou = true;
-                                inGame = 0; // Sai do loop
-                            }
-                            
-                            // Reseta as flags para a próxima iteração
-                            PRESSED_B = 0;
-                            PRESSED_G = 0;
-                            PRESSED_R = 0;
-                            PRESSED_Y = 0;
-                        }
+                    while (!PRESSED_B && !PRESSED_G && !PRESSED_R && !PRESSED_Y) {
+                        //Espera o jogador pressionar uma cor
                     }
-
-                }
-
-                if (!errou) {
-                    rodada++; // Aumenta a rodada apenas se todas as cores corretas forem pressionadas
+                    char cor_press = PRESSED_COLOR;
+                    if (cor_press == cor) {
+                    }
+                    else if (PRESSED_COLOR != cor && PRESSED_COLOR != 'S') {
+                        inGame = 0; // Sai do loop
+                    }
+                    // Reseta as flags para a próxima iteração
+                    PRESSED_B = 0;
+                    PRESSED_G = 0;
+                    PRESSED_R = 0;
+                    PRESSED_Y = 0;
+                    PRESSED_COLOR = 'S';
+                            
                 }
             }
+            
         }
 
         //Fim de jogo
@@ -161,6 +154,7 @@ int main() {
         mostrarAcertos(rodada-1, BUZZER, LED_R, LED_G, LED_B);
         PRESSED_START = 0; //Reseta o botão de start
 
-        return 0;
     }
+    return 0;
+
 }
