@@ -26,8 +26,29 @@
 				"ms-vscode.cpptools-themes",
 				"ms-vscode.vscode-serial-monitor",
 				"twxs.cmake",
-				"wokwi.wokwi-vscode"
-			  ]
+				"wokwi.wokwi-vscode",
+				"seunlanlege.action-buttons"
+			]
+		},
+		"settings":{
+			"cmake.statusbar.advanced": {
+			"cpack": {"statusBarVisibility": "hidden"},
+            "debug": {
+                "statusBarVisibility": "hidden",
+            	"inheritDefault": "hidden"
+            },
+            "launch": {
+                "visibility": "hidden"
+            },
+            "build": {
+                "visibility": "hidden"
+            },
+            "buildTarget": {
+				"statusBarVisibility": "hidden",
+                "visibility": "hidden"
+            }
+			
+        }
 		}
 	}
 
