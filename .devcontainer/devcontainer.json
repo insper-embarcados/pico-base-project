@@ -38,7 +38,7 @@
             	"inheritDefault": "hidden"
             },
             "launch": {
-                "visibility": "hidden"
+                "visibility": "visible"
             },
             "build": {
                 "visibility": "hidden"

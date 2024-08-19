@@ -14,17 +14,8 @@
           "adapter speed 5000; program {${command:cmake.launchTargetPath}} verify reset exit"
         ],
         "problemMatcher": []
-      },
-      {
-        "label": "Build",
-        "type": "cmake",
-        "command": "build",
-        "problemMatcher": "$gcc",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        }
       }
+      
     ]
   }
   

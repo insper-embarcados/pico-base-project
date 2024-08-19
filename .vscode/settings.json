@@ -6,7 +6,7 @@
     "cmake.buildBeforeRun": true,
     "cmake.configureOnOpen": true,
     "cmake.ctest.allowParallelJobs": true,
-    "cmake.parallelJobs": 4,
+    "cmake.parallelJobs": 8,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
 
 
@@ -14,34 +14,14 @@
     "actionButtons": {
 		 "defaultColor": "#ff0034", // Can also use string color names.
 		 "loadNpmCommands":false, // Disables automatic generation of actions for npm commands.
-		 "reloadButton":"Reload", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
+		 "reloadButton":"", // Custom reload button text or icon (default ↻). null value enables automatic reload on configuration change
 		 "commands": [
-            {
-                "name": "$(target) Select Build Target",
-                "color": "pink",
-                "useVsCodeApi": true,
-                "command": "cmake.setDefaultTarget" // Comando para abrir a seleção de build target
-            },
 			 {
-				 "name": "$(tools) Build",
-				 "color": "red",
-				 "useVsCodeApi": true,
-                 "command": "workbench.action.tasks.runTask",
-				 "args": ["Build"]
-				 
-			 },
-			 {
-				"name": "$(rocket) Launch",
-				"color": "orange",
+				"name": "$(rocket) ",
+				"color": "white",
 				"useVsCodeApi": true,
 				"command": "workbench.action.tasks.runTask",
 				"args": ["Flash"]
-		     },
-             {
-				"name": "$(debug-console) Debug",
-				"color": "green",
-				"useVsCodeApi": true,
-				"command": "workbench.action.debug.start"
 		     }
 		 ]
 	 },
@@ -52,7 +32,7 @@
              "visibility": "hidden"
          },
          "launch": {
-             "visibility": "hidden"
+             "visibility": "visible"
          },
          "build": {
              "visibility": "hidden"
